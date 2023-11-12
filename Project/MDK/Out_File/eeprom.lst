@@ -1,0 +1,131 @@
+C251 COMPILER V5.60.0,  eeprom                                                             31/07/23  12:54:58  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE eeprom
+OBJECT MODULE PLACED IN .\Out_File\eeprom.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE eeprom.c XSMALL INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(
+                    -..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\
+                    -USER\src) DEBUG PRINT(.\Out_File\eeprom.lst) OBJECT(.\Out_File\eeprom.obj) 
+
+stmt  level    source
+
+    1          #include "headfile.h"
+    2          
+    3          uint8 date_buff[100]; //eeprom数据数组
+    4          uint8 eeprom_init_time = 0;
+    5          void eeprom_init()
+    6          {
+    7   1          iap_init();                                                                 //初始化EEPROM;
+    8   1      
+    9   1          iap_read_bytes(0x00, date_buff, 100);               //从EEPROM中读取数据
+   10   1      
+   11   1      /****不用eeprom直接赋值****/
+   12   1      
+   13   1              
+   14   1      /****用eeprom赋值****/
+   15   1          
+   16   1          //刷写程序后初次启动,填充eeprom
+   17   1          eeprom_init_time = read_int(0);     
+   18   1          if(eeprom_init_time != 1)
+   19   1          {
+   20   2              save_int(1,0);
+   21   2              
+   22   2              save_int(Start_Flag,1);
+   23   2              save_int(garage_out_direction,2);
+   24   2              save_float(PID_P,3);
+   25   2              save_float(PID_D,4);
+   26   2              save_int(normal_speed,5);
+   27   2          }
+   28   1          
+   29   1          //eeprom读取
+   30   1          Start_Flag = read_int(1);
+   31   1          garage_out_direction = read_int(2);
+   32   1              PID_P = read_float(3);
+   33   1          PID_D = read_float(4);
+   34   1          normal_speed = read_int(5);
+   35   1      }
+   36          
+   37          void eeprom_flash()
+   38          {
+   39   1          //需要保存的参数
+   40   1          save_int(Start_Flag,1);
+   41   1          save_int(garage_out_direction,2);
+   42   1          save_float(PID_P,3);
+   43   1          save_float(PID_D,4);
+   44   1          save_int(normal_speed,5);
+   45   1      }
+   46          
+   47          void save_int(int32 input, uint8 value_bit)
+   48          {
+   49   1          uint8 i;
+   50   1          uint8 begin = value_bit * 4;
+   51   1          uint8* p = (uint8*)&input;
+   52   1          for(i = 0; i < 4; i++)
+   53   1          {
+   54   2              date_buff[begin++] = *(p + i);
+   55   2          }
+   56   1          extern_iap_write_bytes(0x00, date_buff, 100);
+   57   1      }
+C251 COMPILER V5.60.0,  eeprom                                                             31/07/23  12:54:58  PAGE 2   
+
+   58          
+   59          int32 read_int(uint8 value_bit)
+   60          {
+   61   1          uint8 i;
+   62   1          uint8 begin = value_bit * 4;
+   63   1          int32 output;
+   64   1          uint8* p = (uint8*)&output;;
+   65   1          for(i = 0; i < 4; i++)
+   66   1          {
+   67   2              *(p + i) = date_buff[begin++];
+   68   2          }
+   69   1          return output;
+   70   1      }
+   71          
+   72          void save_float(float input, uint8 value_bit)
+   73          {
+   74   1          uint8 i;
+   75   1          uint8 begin = value_bit * 4;
+   76   1          uint8* p = (uint8*)&input;
+   77   1          for(i = 0; i < 4; i++)
+   78   1          {
+   79   2              date_buff[begin++] = *(p + i);
+   80   2          }
+   81   1          extern_iap_write_bytes(0x00, date_buff, 100);
+   82   1      }
+   83          float read_float(uint8 value_bit)
+   84          {
+   85   1          uint8 i;
+   86   1          uint8 begin = value_bit * 4;
+   87   1          float output;
+   88   1          uint8* p = (uint8*)&output;;
+   89   1          for(i = 0; i < 4; i++)
+   90   1          {
+   91   2              *(p + i) = date_buff[begin++];
+   92   2          }
+   93   1          return output;
+   94   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       626     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       145     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =         5     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

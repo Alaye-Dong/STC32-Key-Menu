@@ -1,0 +1,144 @@
+C251 COMPILER V5.60.0,  key                                                                31/07/23  12:54:57  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE key
+OBJECT MODULE PLACED IN .\Out_File\key.obj
+COMPILER INVOKED BY: C:\Keil_v5\C251\BIN\C251.EXE key.c XSMALL INTR2 WARNINGLEVEL(3) OPTIMIZE(0,SPEED) BROWSE INCDIR(..\
+                    -..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USE
+                    -R\src) DEBUG PRINT(.\Out_File\key.lst) OBJECT(.\Out_File\key.obj) 
+
+stmt  level    source
+
+    1          #include "key.h"
+    2          
+    3          //定义按键引脚
+    4          #define KEY1_PIN    P70
+    5          #define KEY2_PIN    P71 
+    6          #define KEY3_PIN    P72
+    7          #define KEY4_PIN    P73
+    8          //定义拨码开关引脚
+    9          #define SW1_PIN     P76
+   10          #define SW2_PIN     P75
+   11          
+   12          //定义按键代号
+   13          #define KeystrokeONE 1
+   14          #define KeystrokeTWO 2
+   15          #define KeystrokeTHREE 3
+   16          #define KeystrokeFOUR 4
+   17          
+   18          //拨码开关状态变量 ON为0
+   19          uint8 sw1_status;
+   20          uint8 sw2_status;
+   21          
+   22          //开关状态变量
+   23          uint8 key1_status = 1;
+   24          uint8 key2_status = 1;
+   25          uint8 key3_status = 1;
+   26          uint8 key4_status = 1;
+   27          
+   28          //上一次开关状态变量
+   29          uint8 key1_last_status;
+   30          uint8 key2_last_status;
+   31          uint8 key3_last_status;
+   32          uint8 key4_last_status;
+   33          
+   34          //开关标志位
+   35          uint8 key1_flag;
+   36          uint8 key2_flag;
+   37          uint8 key3_flag;
+   38          uint8 key4_flag;
+   39          
+   40          void Keystroke_Scan(void)
+   41          {
+   42   1      
+   43   1          //获取拨码开关状态
+   44   1          sw1_status = SW1_PIN;
+   45   1          sw2_status = SW2_PIN;
+   46   1      
+   47   1          //使用此方法优点在于，不需要使用while(1) 等待，避免处理器资源浪费
+   48   1          //保存按键状态
+   49   1          key1_last_status = key1_status;
+   50   1          key2_last_status = key2_status;
+   51   1          key3_last_status = key3_status;
+   52   1          key4_last_status = key4_status;
+   53   1          //读取当前按键状态
+   54   1          key1_status = KEY1_PIN;
+   55   1          key2_status = KEY2_PIN;
+   56   1          key3_status = KEY3_PIN;
+   57   1          key4_status = KEY4_PIN;
+C251 COMPILER V5.60.0,  key                                                                31/07/23  12:54:57  PAGE 2   
+
+   58   1      
+   59   1      
+   60   1          //检测到按键按下之后  并放开置位标志位
+   61   1          if(key1_status && !key1_last_status)    key1_flag = 1;
+   62   1          if(key2_status && !key2_last_status)    key2_flag = 1;
+   63   1          if(key3_status && !key3_last_status)    key3_flag = 1;
+   64   1          if(key4_status && !key4_last_status)    key4_flag = 1;
+   65   1      
+   66   1          //标志位置位之后，可以使用标志位执行自己想要做的事件
+   67   1          KeystrokeLabel = 0;        
+   68   1      
+   69   1          if(key1_flag)   
+   70   1          {
+   71   2              key1_flag = 0;//使用按键之后，应该清除标志位
+   72   2              KeystrokeLabel = 1;
+   73   2              BEEP = 1;
+   74   2              delay_ms(5);
+   75   2              BEEP = 0;
+   76   2          }
+   77   1      
+   78   1          if(key2_flag)   
+   79   1          {
+   80   2              key2_flag = 0;//使用按键之后，应该清除标志位
+   81   2              KeystrokeLabel = 2;
+   82   2              BEEP = 1;
+   83   2              delay_ms(5);
+   84   2              BEEP = 0;
+   85   2          }
+   86   1      
+   87   1          if(key3_flag)   
+   88   1          {
+   89   2              key3_flag = 0;//使用按键之后，应该清除标志位
+   90   2              KeystrokeLabel = 3;
+   91   2              BEEP = 1;
+   92   2              delay_ms(5);
+   93   2              BEEP = 0;        
+   94   2          }
+   95   1      
+   96   1          if(key4_flag)   
+   97   1          {
+   98   2              key4_flag = 0;//使用按键之后，应该清除标志位
+   99   2              KeystrokeLabel = 4;
+  100   2              BEEP = 1;
+  101   2              delay_ms(5);
+  102   2              BEEP = 0;        
+  103   2          }
+  104   1      
+  105   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       314     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        14     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+C251 COMPILER V5.60.0,  key                                                                31/07/23  12:54:57  PAGE 3   
+
+  hconst size          =        20     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
