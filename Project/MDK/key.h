@@ -3,30 +3,11 @@
 
 #include "headfile.h"
 
-//²¦Âë¿ª¹Ø×´Ì¬±äÁ¿
+//æ‹¨ç å¼€å…³çŠ¶æ€å˜é‡
 extern uint8 sw1_status;
 extern uint8 sw2_status;
 
-//¿ª¹Ø×´Ì¬±äÁ¿
-extern uint8 key1_status ;
-extern uint8 key2_status ;
-extern uint8 key3_status ;
-extern uint8 key4_status ;
-
-//ÉÏÒ»´Î¿ª¹Ø×´Ì¬±äÁ¿
-extern uint8 key1_last_status;
-extern uint8 key2_last_status;
-extern uint8 key3_last_status;
-extern uint8 key4_last_status;
-
-//¿ª¹Ø±êÖ¾Î»
-extern uint8 key1_flag;
-extern uint8 key2_flag;
-extern uint8 key3_flag;
-extern uint8 key4_flag;
-
 extern uint8 KeystrokeLabel;
-
 
 void Keystroke_Scan(void);
 
