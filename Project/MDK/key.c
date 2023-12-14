@@ -1,105 +1,52 @@
 #include "key.h"
 
-//¶¨Òå°´¼üÒı½Å
-#define KEY1_PIN    P70
-#define KEY2_PIN    P71	
+//å®šä¹‰æŒ‰é”®å¼•è„š
+#define KEY1_PIN    P71
+#define KEY2_PIN    P70	
 #define KEY3_PIN    P72
 #define KEY4_PIN    P73
-//¶¨Òå²¦Âë¿ª¹ØÒı½Å
+//å®šä¹‰æ‹¨ç å¼€å…³å¼•è„š
 #define SW1_PIN     P76
 #define SW2_PIN     P75
 
-//¶¨Òå°´¼ü´úºÅ
-#define KeystrokeONE 1
-#define KeystrokeTWO 2
-#define KeystrokeTHREE 3
-#define KeystrokeFOUR 4
-
-//²¦Âë¿ª¹Ø×´Ì¬±äÁ¿ ONÎª0
+//æ‹¨ç å¼€å…³çŠ¶æ€å˜é‡ ONä¸º0
 uint8 sw1_status;
 uint8 sw2_status;
 
-//¿ª¹Ø×´Ì¬±äÁ¿
-uint8 key1_status = 1;
-uint8 key2_status = 1;
-uint8 key3_status = 1;
-uint8 key4_status = 1;
-
-//ÉÏÒ»´Î¿ª¹Ø×´Ì¬±äÁ¿
-uint8 key1_last_status;
-uint8 key2_last_status;
-uint8 key3_last_status;
-uint8 key4_last_status;
-
-//¿ª¹Ø±êÖ¾Î»
-uint8 key1_flag;
-uint8 key2_flag;
-uint8 key3_flag;
-uint8 key4_flag;
+uint8 key_last_status[5]={0};
+uint8 key_status[5]={0};
+uint8 key_flag[5]={0};
 
 void Keystroke_Scan(void)
 {
 
-    //»ñÈ¡²¦Âë¿ª¹Ø×´Ì¬
+    uint8 i = 0;
+    KeystrokeLabel = 0;
+    
+    //è·å–æ‹¨ç å¼€å…³çŠ¶æ€
     sw1_status = SW1_PIN;
     sw2_status = SW2_PIN;
-
-    //Ê¹ÓÃ´Ë·½·¨ÓÅµãÔÚÓÚ£¬²»ĞèÒªÊ¹ÓÃwhile(1) µÈ´ı£¬±ÜÃâ´¦ÀíÆ÷×ÊÔ´ÀË·Ñ
-    //±£´æ°´¼ü×´Ì¬
-    key1_last_status = key1_status;
-    key2_last_status = key2_status;
-    key3_last_status = key3_status;
-    key4_last_status = key4_status;
-    //¶ÁÈ¡µ±Ç°°´¼ü×´Ì¬
-    key1_status = KEY1_PIN;
-    key2_status = KEY2_PIN;
-    key3_status = KEY3_PIN;
-    key4_status = KEY4_PIN;
-
-
-    //¼ì²âµ½°´¼ü°´ÏÂÖ®ºó  ²¢·Å¿ªÖÃÎ»±êÖ¾Î»
-    if(key1_status && !key1_last_status)    key1_flag = 1;
-    if(key2_status && !key2_last_status)    key2_flag = 1;
-    if(key3_status && !key3_last_status)    key3_flag = 1;
-    if(key4_status && !key4_last_status)    key4_flag = 1;
-
-    //±êÖ¾Î»ÖÃÎ»Ö®ºó£¬¿ÉÒÔÊ¹ÓÃ±êÖ¾Î»Ö´ĞĞ×Ô¼ºÏëÒª×öµÄÊÂ¼ş
-    KeystrokeLabel = 0;        
-
-    if(key1_flag)   
-    {
-        key1_flag = 0;//Ê¹ÓÃ°´¼üÖ®ºó£¬Ó¦¸ÃÇå³ı±êÖ¾Î»
-        KeystrokeLabel = 1;
-        BEEP = 1;
-        delay_ms(5);
-        BEEP = 0;
+    
+    // ä¿å­˜æŒ‰é”®çŠ¶æ€
+    for ( i = 0; i < 4; i++) {
+        key_last_status[i] = key_status[i];
     }
+    key_status[0] = KEY1_PIN;
+    key_status[1] = KEY2_PIN;
+    key_status[2] = KEY3_PIN;
+    key_status[3] = KEY4_PIN;
 
-    if(key2_flag)   
-    {
-        key2_flag = 0;//Ê¹ÓÃ°´¼üÖ®ºó£¬Ó¦¸ÃÇå³ı±êÖ¾Î»
-        KeystrokeLabel = 2;
-        BEEP = 1;
-        delay_ms(5);
-        BEEP = 0;
+    for ( i = 0; i < 4; i++) {
+        if (key_status[i] && !key_last_status[i]) {
+            key_flag[i] = 1;
+        }
+        if (key_flag[i]) {
+            key_flag[i] = 0; // ä½¿ç”¨æŒ‰é”®ä¹‹åï¼Œåº”è¯¥æ¸…é™¤æ ‡å¿—ä½
+            KeystrokeLabel = i + 1;
+            BEEP = 1;
+            delay_ms(5);
+            BEEP = 0;
+        }
     }
-
-    if(key3_flag)   
-    {
-        key3_flag = 0;//Ê¹ÓÃ°´¼üÖ®ºó£¬Ó¦¸ÃÇå³ı±êÖ¾Î»
-        KeystrokeLabel = 3;
-        BEEP = 1;
-        delay_ms(5);
-        BEEP = 0;        
-    }
-
-    if(key4_flag)   
-    {
-        key4_flag = 0;//Ê¹ÓÃ°´¼üÖ®ºó£¬Ó¦¸ÃÇå³ı±êÖ¾Î»
-        KeystrokeLabel = 4;
-        BEEP = 1;
-        delay_ms(5);
-        BEEP = 0;        
-    }
-
+    
 }
